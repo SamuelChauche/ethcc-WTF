@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <title>EthCC Who's This Face – Cannes 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0a0a0f;
+      --surface:  #12121a;
+      --surface2: #181825;
+      --border:   #1e1e30;
+      --violet:   #7c3aed;
+      --violet2:  #a855f7;
+      --cyan:     #06b6d4;
+      --green:    #10b981;
+      --red:      #ef4444;
+      --gold:     #f59e0b;
+      --text:     #e2e8f0;
+      --muted:    #64748b;
+      --font:     'Space Grotesk', system-ui, -apple-system, sans-serif;
+      --font-display: 'Sora', 'Space Grotesk', system-ui, sans-serif;
+      --radius:   16px;
+      --card-max: 520px;
+    }
+
+    html { scroll-behavior: smooth; }
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── BACKGROUND ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(124,58,237,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,58,237,.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 80%);
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      top: -20vh; left: 50%; transform: translateX(-50%);
+      width: 90vw; height: 70vh;
+      background:
+        radial-gradient(ellipse 50% 40% at 40% 30%, rgba(124,58,237,.07) 0%, transparent 100%),
+        radial-gradient(ellipse 40% 35% at 65% 50%, rgba(6,182,212,.04) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #app {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── HEADER ── */
+    header {
+      width: 100%;
+      padding: 1.25rem 1.5rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .6rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: linear-gradient(var(--bg) 60%, transparent);
+      padding-bottom: 1rem;
+    }
+
+    .logo {
+      font-family: var(--font-display);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--violet2);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      user-select: none;
+      opacity: .85;
+    }
+    .logo::before, .logo::after {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--violet2));
+      opacity: .5;
+    }
+    .logo::after {
+      background: linear-gradient(90deg, var(--violet2), transparent);
+    }
+
+    .progress-bar-wrap {
+      width: 100%;
+      max-width: var(--card-max);
+      height: 3px;
+      background: rgba(255,255,255,.06);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    #progress-bar {
+      height: 100%;
+      background: var(--violet2);
+      border-radius: 99px;
+      transition: width .5s cubic-bezier(.4,0,.2,1);
+      width: 0%;
+      box-shadow: 0 0 16px rgba(168,85,247,.5);
+    }
+
+    .header-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: var(--card-max);
+    }
+    .counter {
+      font-size: .78rem;
+      color: var(--muted);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+    .score-pill {
+      font-size: .78rem;
+      font-weight: 700;
+      padding: .3rem .85rem;
+      background: rgba(124,58,237,.1);
+      border: 1px solid rgba(124,58,237,.2);
+      border-radius: 99px;
+      color: var(--violet2);
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      font-variant-numeric: tabular-nums;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 0 12px rgba(124,58,237,.08);
+    }
+    .score-pill.bump {
+      animation: scoreBump .35s ease;
+    }
+    @keyframes scoreBump {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.2); box-shadow: 0 0 16px rgba(124,58,237,.5); }
+      100% { transform: scale(1); }
+    }
+    .score-pill::before { content: '\2605'; }
+
+    /* ── GAME AREA ── */
+    #game-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 1rem 2rem;
+      width: 100%;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: rgba(18,18,26,.85);
+      border: 1px solid rgba(124,58,237,.12);
+      border-radius: 28px;
+      padding: 2.25rem 2rem 2rem;
+      max-width: var(--card-max);
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+      position: relative;
+      overflow: hidden;
+      animation: cardIn .5s cubic-bezier(.4,0,.2,1) forwards;
+      backdrop-filter: blur(20px);
+      box-shadow:
+        0 8px 32px rgba(0,0,0,.4),
+        0 0 0 1px rgba(255,255,255,.03) inset,
+        0 1px 0 rgba(255,255,255,.04) inset;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -100px; left: 50%; transform: translateX(-50%);
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(124,58,237,.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(20px) scale(.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      15%     { transform: translateX(-8px) rotate(-.5deg); }
+      30%     { transform: translateX(8px) rotate(.5deg); }
+      45%     { transform: translateX(-6px) rotate(-.3deg); }
+      60%     { transform: translateX(6px) rotate(.3deg); }
+      75%     { transform: translateX(-3px); }
+      90%     { transform: translateX(3px); }
+    }
+    @keyframes pulse-glow {
+      0%,100% { box-shadow: 0 0 20px rgba(16,185,129,.3), 0 0 40px rgba(16,185,129,.1); }
+      50%     { box-shadow: 0 0 35px rgba(16,185,129,.6), 0 0 60px rgba(16,185,129,.2); }
+    }
+    .card.shake { animation: shake .5s ease forwards; }
+    .card.pulse { animation: pulse-glow .8s ease 2 forwards; border-color: rgba(16,185,129,.3); }
+    .card.shake, .card.pulse { opacity: 1; }
+
+    /* ── PHOTO ── */
+    .photo-wrap {
+      position: relative;
+      width: 210px;
+      height: 210px;
+      flex-shrink: 0;
+    }
+    .photo-hex {
+      width: 210px;
+      height: 210px;
+      clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+      object-fit: cover;
+      display: block;
+      transition: filter .4s, transform .4s cubic-bezier(.4,0,.2,1);
+      background: var(--surface2);
+    }
+    .photo-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+      background: rgba(124,58,237,.25);
+      z-index: -1;
+    }
+    .photo-wrap::after {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+      background: var(--violet);
+      z-index: -2;
+      filter: blur(18px);
+      opacity: .35;
+      transition: opacity .4s, filter .4s;
+    }
+    .photo-wrap:hover .photo-hex { transform: scale(1.04); }
+    .photo-wrap:hover::after { opacity: .6; filter: blur(24px); }
+
+    /* ── QUESTION / ROLE HINTS ── */
+    .question-hint {
+      font-size: .72rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+      opacity: .7;
+    }
+    .role-badge {
+      font-size: .62rem;
+      padding: .22rem .65rem;
+      border-radius: 99px;
+      background: rgba(124,58,237,.08);
+      border: 1px solid rgba(124,58,237,.15);
+      color: var(--violet2);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-group {
+      display: flex;
+      gap: .65rem;
+      width: 100%;
+      margin-top: .25rem;
+    }
+    .btn {
+      flex: 1;
+      padding: .85rem 1rem;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font);
+      font-size: .95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .12s, filter .15s, box-shadow .2s, background .15s, border-color .15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn:active { transform: scale(.96); }
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.08), transparent);
+      opacity: 0;
+      transition: opacity .15s;
+    }
+    .btn:hover::after { opacity: 1; }
+
+    .btn-name {
+      background: rgba(124,58,237,.06);
+      border: 1px solid rgba(124,58,237,.15);
+      color: var(--text);
+      font-size: .88rem;
+      font-weight: 600;
+      padding: .85rem .7rem;
+      transition: all .2s cubic-bezier(.4,0,.2,1);
+    }
+    .btn-name .arrow-hint {
+      font-size: .75rem;
+      opacity: .4;
+      flex-shrink: 0;
+      transition: opacity .15s;
+    }
+    .btn-name:hover {
+      background: rgba(124,58,237,.14);
+      border-color: var(--violet2);
+      box-shadow: 0 4px 24px rgba(124,58,237,.15);
+      transform: translateY(-2px);
+    }
+    .btn-name:hover .arrow-hint {
+      opacity: .8;
+    }
+    .btn-name:active { transform: scale(.97) translateY(0); }
+
+    /* ── SUSPENSE STATES ── */
+    .btn-name.locked {
+      pointer-events: none;
+      opacity: .6;
+    }
+    .btn-name.selected {
+      opacity: 1;
+      background: rgba(124,58,237,.2);
+      border-color: var(--violet2);
+      box-shadow: 0 0 20px rgba(124,58,237,.25);
+      animation: suspensePulse .4s ease infinite alternate;
+    }
+    @keyframes suspensePulse {
+      from { box-shadow: 0 0 16px rgba(124,58,237,.2); }
+      to   { box-shadow: 0 0 28px rgba(124,58,237,.4); }
+    }
+    .btn-name.btn-correct {
+      background: rgba(16,185,129,.15) !important;
+      border-color: var(--green) !important;
+      color: #6ee7b7 !important;
+      opacity: 1 !important;
+      animation: none;
+      box-shadow: 0 0 16px rgba(16,185,129,.2);
+    }
+    .btn-name.btn-wrong {
+      background: rgba(239,68,68,.1) !important;
+      border-color: var(--red) !important;
+      color: #fca5a5 !important;
+      opacity: .7 !important;
+      animation: none;
+      box-shadow: none;
+    }
+
+    /* ── FOOTER ── */
+    .made-by {
+      font-size: .68rem;
+      color: var(--muted);
+      opacity: .45;
+      text-align: center;
+      padding: .75rem 0 1.25rem;
+      letter-spacing: .04em;
+      font-weight: 400;
+    }
+    .made-by strong {
+      color: var(--violet2);
+      font-weight: 600;
+      opacity: .8;
+    }
+
+    .btn-next {
+      background: #fff;
+      color: var(--bg);
+      box-shadow: 0 4px 24px rgba(255,255,255,.1);
+      width: 100%;
+      padding: 1rem;
+      font-weight: 700;
+      letter-spacing: .01em;
+    }
+    .btn-next:hover {
+      background: #f0f0f5;
+      box-shadow: 0 6px 32px rgba(255,255,255,.14);
+      transform: translateY(-2px);
+    }
+
+    /* ── FEEDBACK ── */
+    .feedback {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: .88rem;
+      line-height: 1.6;
+      font-weight: 500;
+      display: none;
+      animation: feedbackIn .3s ease both;
+    }
+    @keyframes feedbackIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .feedback.good {
+      background: rgba(16,185,129,.08);
+      border: 1px solid rgba(16,185,129,.2);
+      color: #6ee7b7;
+      display: block;
+      box-shadow: 0 2px 12px rgba(16,185,129,.06);
+    }
+    .feedback.bad {
+      background: rgba(239,68,68,.06);
+      border: 1px solid rgba(239,68,68,.2);
+      color: #fca5a5;
+      display: block;
+      box-shadow: 0 2px 12px rgba(239,68,68,.05);
+    }
+    .feedback .emoji { font-size: 1.15em; }
+
+    .sector-tag {
+      display: block;
+      margin-top: .5rem;
+      font-size: .76rem;
+      line-height: 1.55;
+      padding: .55rem .85rem;
+      background: rgba(6,182,212,.05);
+      border: 1px solid rgba(6,182,212,.1);
+      border-left: 2px solid rgba(6,182,212,.4);
+      border-radius: 8px;
+      color: rgba(125,211,232,.8);
+      font-weight: 400;
+      font-style: italic;
+    }
+
+    /* ── START SCREEN ── */
+    #start-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      max-width: var(--card-max);
+      width: 100%;
+      padding: 3.5rem 2.5rem;
+      background: rgba(18,18,26,.85);
+      border: 1px solid rgba(124,58,237,.1);
+      border-radius: 28px;
+      animation: cardIn .6s ease both;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      box-shadow:
+        0 8px 32px rgba(0,0,0,.4),
+        0 0 0 1px rgba(255,255,255,.03) inset,
+        0 1px 0 rgba(255,255,255,.04) inset;
+    }
+    .start-icon {
+      font-size: 4.5rem;
+      line-height: 1;
+      filter: drop-shadow(0 0 24px rgba(124,58,237,.5));
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .start-title {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+      letter-spacing: -.02em;
+    }
+    .start-subtitle {
+      font-size: .95rem;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 360px;
+    }
+    .start-subtitle strong {
+      color: var(--text);
+    }
+    .start-stats {
+      display: flex;
+      gap: 2rem;
+    }
+    .start-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .25rem;
+    }
+    .start-stat-num {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--violet2);
+    }
+    .start-stat-label {
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .btn-start {
+      background: #fff;
+      color: var(--bg);
+      border: none;
+      padding: 1.1rem 3.5rem;
+      border-radius: var(--radius);
+      font-family: var(--font);
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 4px 24px rgba(255,255,255,.1);
+      letter-spacing: .02em;
+      position: relative;
+    }
+    .btn-start:hover {
+      background: #f0f0f5;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(255,255,255,.15);
+    }
+    .btn-start:active { transform: scale(.97); }
+
+    /* ── END SCREEN ── */
+    #end-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      max-width: var(--card-max);
+      width: 100%;
+      padding: 3.5rem 2.5rem;
+      background: rgba(18,18,26,.85);
+      border: 1px solid rgba(124,58,237,.1);
+      border-radius: 28px;
+      animation: cardIn .5s ease both;
+      backdrop-filter: blur(20px);
+      box-shadow:
+        0 8px 32px rgba(0,0,0,.4),
+        0 0 0 1px rgba(255,255,255,.03) inset,
+        0 1px 0 rgba(255,255,255,.04) inset;
+    }
+    .end-title {
+      font-family: var(--font-display);
+      font-size: 1.85rem;
+      font-weight: 800;
+      text-align: center;
+      color: #fff;
+      letter-spacing: -.02em;
+    }
+    .end-score {
+      font-family: var(--font-display);
+      font-size: 5rem;
+      font-weight: 800;
+      line-height: 1;
+      color: #fff;
+      letter-spacing: -.03em;
+    }
+    .end-score span {
+      font-size: 1.5rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+    .end-message {
+      font-size: .95rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+      max-width: 380px;
+    }
+    .end-bar-wrap {
+      width: 100%;
+      max-width: 280px;
+      height: 8px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .end-bar {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 1s cubic-bezier(.4,0,.2,1);
+      width: 0%;
+    }
+    .btn-replay {
+      background: #fff;
+      color: var(--bg);
+      border: none;
+      padding: 1.1rem 3rem;
+      border-radius: var(--radius);
+      font-family: var(--font);
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 4px 24px rgba(255,255,255,.1);
+      letter-spacing: .02em;
+    }
+    .btn-replay:hover {
+      background: #f0f0f5;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(255,255,255,.15);
+    }
+    .btn-replay:active { transform: scale(.97); }
+
+    /* ── CONFETTI ── */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ── KEYBOARD HINTS ── */
+    .kbd-hint {
+      font-size: .65rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      opacity: .6;
+      margin-top: .25rem;
+    }
+    kbd {
+      display: inline-block;
+      padding: .1rem .35rem;
+      background: var(--border);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 4px;
+      font-family: var(--font);
+      font-size: .6rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 520px) {
+      header { padding: 1rem 1rem 0; }
+      .card { padding: 1.5rem 1.15rem 1.25rem; border-radius: 22px; gap: .9rem; }
+      .photo-wrap, .photo-hex { width: 170px; height: 170px; }
+      .btn { font-size: .88rem; padding: .75rem .6rem; }
+      .btn-name { padding: .75rem .5rem; font-size: .8rem; }
+      .start-title { font-size: 1.6rem; }
+      .start-stats { gap: 1.5rem; }
+      .start-stat-num { font-size: 1.5rem; }
+      .end-score { font-size: 3.5rem; }
+      .kbd-hint { display: none; }
+      #start-screen, #end-screen { padding: 2rem 1.25rem; }
+    }
+
+    @media (max-width: 360px) {
+      .photo-wrap, .photo-hex { width: 150px; height: 150px; }
+      .card { padding: 1.25rem 1rem 1rem; }
+    }
+
+    /* ── FOCUS VISIBLE ── */
+    .btn:focus-visible, .btn-start:focus-visible, .btn-replay:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 2px;
+    }
+
+    /* ── PREFERS REDUCED MOTION ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+<canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+<div id="app">
+  <header>
+    <div class="logo" role="banner">EthCC Who's This Face</div>
+    <div class="progress-bar-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+      <div id="progress-bar"></div>
+    </div>
+    <div class="header-meta">
+      <span class="counter" id="counter" aria-live="polite">1 / 47</span>
+      <span class="score-pill" id="score-display" aria-live="polite">0</span>
+    </div>
+  </header>
+
+  <section id="game-area" aria-label="Game area">
+    <!-- Injected by JS -->
+  </section>
+
+  <footer class="made-by">made by <strong>passive-record.box</strong></footer>
+
+  <section id="end-screen" aria-label="Results">
+    <div class="end-title">Do you know your scene?</div>
+    <div class="end-score" id="end-score" aria-live="polite">0 <span>/ 47</span></div>
+    <div class="end-bar-wrap"><div class="end-bar" id="end-bar"></div></div>
+    <div class="end-message" id="end-message"></div>
+    <button class="btn-replay" onclick="startGame()">Play Again</button>
+  </section>
+</div>
+
+<script>
+const FALLBACK_SVG = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23181825'/><circle cx='100' cy='72' r='32' fill='%237c3aed' opacity='.4'/><ellipse cx='100' cy='148' rx='48' ry='32' fill='%237c3aed' opacity='.2'/><text x='100' y='108' text-anchor='middle' font-size='36' fill='%23a855f7' font-family='system-ui'>?</text></svg>`;
+
+const speakers = [
+  { name: 'Vitalik Buterin',     gender: 'm', project: 'Ethereum Foundation', role: 'Speaker',    sector: 'Co-founder of Ethereum \u2014 the brain behind the most used L1 protocol in DeFi',                                   photo: 'photos/vitalik.jpeg'  },
+  { name: 'Stani Kulechov',      gender: 'm', project: 'Aave Labs',           role: 'Speaker',    sector: 'CEO of Aave \u2014 DeFi lending protocol with $10B+ TVL, pioneer of flash loans',                                    photo: 'photos/stani.jpeg'    },
+  { name: 'Charles Guillemet',   gender: 'm', project: 'Ledger',              role: 'Speaker',    sector: 'CTO of Ledger \u2014 hardware wallet security for 6M+ crypto users worldwide',                                       photo: 'photos/charles.jpeg'  },
+  { name: 'Fredrik Haga',        gender: 'm', project: 'Dune Analytics',      role: 'Speaker',    sector: 'CEO of Dune \u2014 the world\'s leading on-chain analytics and dashboard platform',                                  photo: 'photos/fredrik.jpeg'  },
+  { name: 'Faustine Fleuret',    gender: 'f', project: 'Morpho',              role: 'Speaker',    sector: 'Head of Growth at Morpho \u2014 optimized on-chain money markets, direct competitor to Aave and Compound',           photo: 'photos/faustine.jpeg' },
+  { name: 'Merlin Egalite',      gender: 'm', project: 'Morpho',              role: 'Speaker',    sector: 'Co-founder of Morpho \u2014 modular lending protocol with $3B+ TVL on Ethereum',                                     photo: 'photos/merlin.jpeg'   },
+  { name: 'Antonio Sanso',       gender: 'm', project: 'Ethereum Foundation', role: 'Speaker',    sector: 'Researcher at EF \u2014 applied cryptography specialist, BLS signatures & ZK protocols',                             photo: 'photos/antonio.jpeg'  },
+  { name: 'Evgeny Ponomarev',    gender: 'm', project: 'Fluence',             role: 'Speaker',    sector: 'CEO of Fluence \u2014 decentralized peer-to-peer cloud computing infrastructure for Web3',                            photo: 'photos/evgeny.jpeg'   },
+  { name: 'Kite Liu',            gender: 'm', project: 'Uniswap Labs',        role: 'Speaker',    sector: 'Engineer at Uniswap Labs \u2014 world\'s #1 DEX with $1T+ cumulative trading volume since 2018',                     photo: 'photos/kite.jpeg'     },
+  { name: 'Costanza Gallo',      gender: 'f', project: 'Safe Labs',           role: 'Speaker',    sector: 'Engineer at Safe \u2014 multi-sig smart contract wallet securing $100B+ in on-chain assets',                          photo: 'photos/costanza.jpeg' },
+  { name: 'Victoria Calmon',     gender: 'f', project: 'Kaiko',               role: 'Speaker',    sector: 'Head of Research at Kaiko \u2014 institutional-grade crypto data provider (pricing, liquidity, order books)',         photo: 'photos/victoria.jpeg' },
+  { name: 'Juan David Mendieta', gender: 'm', project: 'Keyrock',             role: 'Speaker',    sector: 'At Keyrock \u2014 algorithmic crypto market maker active on 85+ exchanges and 1,400+ trading pairs',                 photo: 'photos/juan.jpeg'     },
+  { name: 'Sterling Barnett',    gender: 'm', project: 'Circle',              role: 'Speaker',    sector: 'At Circle \u2014 issuer of USDC, the second-largest stablecoin with $45B+ in circulation',                            photo: 'photos/sterling.jpeg' },
+  { name: 'Toni Wahrstaetter',   gender: 'm', project: 'Ethereum Foundation', role: 'Researcher', sector: 'EF Researcher \u2014 analyzing MEV (Maximal Extractable Value) and Ethereum validator economics',                    photo: 'photos/toni.jpeg'     },
+  { name: 'Grace Rachmany',      gender: 'f', project: 'DAO Leadership',      role: 'Speaker',    sector: 'DAO governance consultant \u2014 helping decentralized organizations structure their decision-making',                photo: 'photos/grace.jpeg'    },
+  { name: 'Laurence Day',        gender: 'm', project: 'Wildcat Labs',        role: 'Speaker',    sector: 'Founder of Wildcat \u2014 on-chain undercollateralized lending protocol for institutional borrowers',                photo: 'photos/laurence.jpeg' },
+  { name: 'Declan Fox',          gender: 'm', project: 'Linea / MetaMask',    role: 'Speaker',    sector: 'Product Manager at Linea \u2014 Ethereum ZK-rollup L2 built by Consensys / MetaMask',                                photo: 'photos/declan.jpeg'   },
+  { name: 'Everton Fraga',       gender: 'm', project: 'AWS',                 role: 'Speaker',    sector: 'Dev Advocate at AWS \u2014 former Ethereum core dev (Geth), now Web3 infrastructure evangelist at Amazon',            photo: 'photos/everton.png'   },
+  { name: 'Paul Brody',          gender: 'm', project: 'Ernst & Young',       role: 'Speaker',    sector: 'Global Blockchain Leader at EY \u2014 deploying Ethereum solutions for supply chain and finance',                    photo: 'photos/paul.jpeg'     },
+  { name: 'Leo Fan',             gender: 'm', project: 'Cysic',               role: 'Speaker',    sector: 'CEO of Cysic \u2014 dedicated hardware for ZK proof acceleration (zkSNARK), making ZK real-time',                    photo: 'photos/leo.jpeg'      },
+  { name: 'David Wachsman',      gender: 'm', project: 'Wachsman',            role: 'Speaker',    sector: 'CEO of Wachsman \u2014 leading global PR and communications agency for blockchain and Web3 companies',               photo: 'photos/david-wachsman.jpeg'      },
+  { name: 'Alex Cutler',         gender: 'm', project: 'Aerodrome / Dromos',  role: 'Speaker',    sector: 'At Aerodrome Finance / Dromos Labs \u2014 top DEX on Base chain and next-gen DeFi liquidity layer',                  photo: 'photos/alex-cutler.jpeg'         },
+  { name: 'Noid',                gender: 'm', project: 'Kraken',              role: 'Speaker',    sector: 'At Kraken \u2014 one of the oldest and largest crypto exchanges, trusted by millions of traders',                     photo: 'photos/noid.jpeg'                },
+  { name: 'cheeky-gorilla',      gender: 'm', project: 'Protocol Guild',      role: 'Speaker',    sector: 'At Protocol Guild \u2014 collective funding mechanism for Ethereum core protocol contributors',                       photo: 'photos/cheeky-gorilla.jpeg'      },
+  { name: 'E.G.',                gender: 'm', project: 'Infura / DIN',        role: 'Speaker',    sector: 'At Infura / DIN \u2014 critical Web3 infrastructure providing RPC node access to millions of dApps',                 photo: 'photos/eg.jpeg'                  },
+  { name: 'Andrew O\'Neill',     gender: 'm', project: 'S&P Global Ratings',  role: 'Speaker',    sector: 'At S&P Global Ratings \u2014 world\'s leading credit rating agency now analyzing digital assets and DeFi',           photo: 'photos/andrew-oneill.jpeg'       },
+  { name: 'James Wo',            gender: 'm', project: 'DFG',                 role: 'Speaker',    sector: 'Founder of Digital Finance Group \u2014 blockchain-focused venture fund investing in Web3 infrastructure',            photo: 'photos/james-wo.jpeg'            },
+  { name: 'Josef Jelacic',       gender: 'm', project: 'Own',                 role: 'Speaker',    sector: 'At Own \u2014 building infrastructure for real-world asset tokenization and on-chain ownership',                      photo: 'photos/josef-jelacic.jpeg'       },
+  { name: 'Just a guy',          gender: 'm', project: 'Ethereum Foundation', role: 'Speaker',    sector: 'At the Ethereum Foundation \u2014 contributing to Ethereum\'s core development and ecosystem growth',                 photo: 'photos/just-a-guy.jpeg'          },
+  { name: 'SEVEN',               gender: 'm', project: 'Nazare Ventures',     role: 'Speaker',    sector: 'At Nazare Ventures \u2014 European Web3 venture capital fund backing early-stage crypto startups',                    photo: 'photos/seven.png'                },
+  { name: 'Maria Magenes',       gender: 'f', project: 'SpaghettETH',         role: 'Speaker',    sector: 'At SpaghettETH \u2014 Italian Ethereum community organizer, building grassroots Web3 culture in Europe',             photo: 'photos/maria-magenes.jpeg'       },
+  { name: 'Chase Manning',       gender: 'm', project: 'Bounce Tech',         role: 'Speaker',    sector: 'At Bounce Tech \u2014 decentralized auction platform for token launches and NFT sales',                               photo: 'photos/chase-manning.jpeg'       },
+  { name: 'Wish Wu',             gender: 'm', project: 'Pharos Network',      role: 'Speaker',    sector: 'At Pharos Network \u2014 building scalable blockchain infrastructure for decentralized applications',                 photo: 'photos/wish-wu.jpeg'             },
+  { name: 'Andres Junge',        gender: 'm', project: 'Anyenk',              role: 'Speaker',    sector: 'At Anyenk \u2014 Web3 startup focused on decentralized identity and access management',                               photo: 'photos/andres-junge.jpeg'        },
+  { name: 'G\u00edsli Kristj\u00e1nsson', gender: 'm', project: 'Monerium',   role: 'Speaker',    sector: 'CEO of Monerium \u2014 licensed e-money issuer bridging traditional finance and blockchain via on-chain EUR/GBP',     photo: 'photos/gisli-kristjansson.jpeg'  },
+  { name: 'Harry Kalodner',      gender: 'm', project: 'Offchain Labs',       role: 'Speaker',    sector: 'At Offchain Labs \u2014 creators of Arbitrum, the leading Ethereum L2 optimistic rollup with billions in TVL',       photo: 'photos/harry-kalodner.jpeg'      },
+  { name: 'Sitara Jabeen',       gender: 'f', project: 'MSF',                 role: 'Speaker',    sector: 'At M\u00e9decins Sans Fronti\u00e8res \u2014 exploring crypto and blockchain for humanitarian aid and transparent donations',   photo: 'photos/sitara-jabeen.jpg'        },
+  { name: 'Dima Gusakov',        gender: 'm', project: 'Lido',                role: 'Speaker',    sector: 'At Lido \u2014 the largest liquid staking protocol on Ethereum with $15B+ in staked ETH',                             photo: 'photos/dima-gusakov.jpeg'        },
+  { name: 'DMH',                 gender: 'm', project: 'Fluid',               role: 'Speaker',    sector: 'At Fluid \u2014 DeFi protocol combining lending and DEX liquidity for capital-efficient trading',                     photo: 'photos/dmh.jpeg'                 },
+  { name: 'Patricio Worthalter', gender: 'm', project: 'POAP',                role: 'Speaker',    sector: 'Creator of POAP \u2014 Proof of Attendance Protocol, digital collectible badges for events and experiences',          photo: 'photos/patricio-worthalter.jpeg' },
+  { name: 'Hong Kim',            gender: 'm', project: 'Bitwise',             role: 'Speaker',    sector: 'At Bitwise Asset Management \u2014 leading crypto index fund and ETF provider for institutional investors',           photo: 'photos/hong-kim.jpeg'            },
+  { name: 'Louie O\'Connor',     gender: 'm', project: 'Ethereum Foundation', role: 'Speaker',    sector: 'At the Ethereum Foundation \u2014 working on Ethereum protocol development and ecosystem support',                    photo: 'photos/louie-oconnor.jpeg'       },
+  { name: 'Flavien Defraire',    gender: 'm', project: 'BGA',                 role: 'Speaker',    sector: 'At Blockchain Game Alliance \u2014 industry body promoting blockchain gaming standards and adoption',                  photo: 'photos/flavien-defraire.png'     },
+  { name: 'Daniel Elkins',       gender: 'm', project: 'DGRS Labs',           role: 'Speaker',    sector: 'At DGRS Labs \u2014 building decentralized governance and reputation systems for Web3',                                photo: 'photos/daniel-elkins.jpeg'       },
+  { name: 'Anthurine',           gender: 'f', project: 'EthStorage',          role: 'Speaker',    sector: 'At EthStorage \u2014 decentralized storage layer for Ethereum, enabling on-chain data availability at low cost',      photo: 'photos/anthurine.jpeg'           },
+  { name: 'Arthur Breitman',     gender: 'm', project: 'Tezos',               role: 'Speaker',    sector: 'Co-founder of Tezos \u2014 self-amending proof-of-stake blockchain with on-chain governance since 2018',              photo: 'photos/arthur-breitman.jpeg'     },
+  { name: 'Skeletor Spaceman',   gender: 'm', project: 'Wonderland',          role: 'Speaker',    sector: 'At Wonderland \u2014 DeFi treasury management and investment protocol in the OHM ecosystem',                          photo: 'photos/skeletor-spaceman.jpeg'   },
+];
+
+/* ─── STATE ─── */
+let current = 0;
+let score = 0;
+let answered = false;
+let order = [];
+let gameStarted = false;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* ─── UI HELPERS ─── */
+function updateHeader() {
+  const pos = current + 1;
+  const total = order.length;
+  document.getElementById('counter').textContent = pos + ' / ' + total;
+  document.getElementById('score-display').textContent = score;
+  const pct = (current / total) * 100;
+  const bar = document.getElementById('progress-bar');
+  bar.style.width = pct + '%';
+  bar.parentElement.setAttribute('aria-valuenow', Math.round(pct));
+}
+
+function getCard() {
+  return document.querySelector('.card');
+}
+
+function bumpScore() {
+  const pill = document.getElementById('score-display');
+  pill.classList.remove('bump');
+  void pill.offsetWidth;
+  pill.classList.add('bump');
+}
+
+/* ─── START SCREEN ─── */
+function showStartScreen() {
+  document.getElementById('game-area').innerHTML = `
+    <div id="start-screen">
+      <div class="start-icon">\u{1F3AD}</div>
+      <div class="start-title">EthCC Who's This Face</div>
+      <p class="start-subtitle">
+        Can you identify the <strong>${speakers.length} speakers</strong> of EthCC Cannes 2026?
+        Test your knowledge of the Web3 ecosystem.
+      </p>
+      <div class="start-stats">
+        <div class="start-stat">
+          <span class="start-stat-num">${speakers.length}</span>
+          <span class="start-stat-label">Speakers</span>
+        </div>
+        <div class="start-stat">
+          <span class="start-stat-num">${new Set(speakers.map(s => s.project)).size}</span>
+          <span class="start-stat-label">Projects</span>
+        </div>
+        <div class="start-stat">
+          <span class="start-stat-num">2</span>
+          <span class="start-stat-label">Choices</span>
+        </div>
+      </div>
+      <button class="btn-start" onclick="startGame()" autofocus>Start the Quiz</button>
+    </div>
+  `;
+}
+
+/* ─── SHOW CARD ─── */
+function showCard(idx) {
+  answered = false;
+  const person = speakers[order[idx]];
+  updateHeader();
+
+  const sameGender = speakers.filter(s => s.gender === person.gender && s.name !== person.name);
+  const decoyName = sameGender[Math.floor(Math.random() * sameGender.length)].name;
+
+  const options = Math.random() < 0.5
+    ? [{ label: person.name, correct: true }, { label: decoyName, correct: false }]
+    : [{ label: decoyName, correct: false }, { label: person.name, correct: true }];
+
+  const gameArea = document.getElementById('game-area');
+  gameArea.innerHTML = `
+    <div class="card" id="current-card">
+      <p class="question-hint">Who is this person?</p>
+      <div class="photo-wrap">
+        <img
+          class="photo-hex"
+          src="${person.photo || FALLBACK_SVG}"
+          alt="Speaker photo"
+          onerror="this.src='${FALLBACK_SVG}'"
+          loading="eager"
+        />
+      </div>
+      <span class="role-badge">${person.role}</span>
+      <div class="feedback" id="feedback"></div>
+      <div class="btn-group" id="btn-group">
+        <button class="btn btn-name" data-correct="${options[0].correct}" onclick="handleClick(this)"><span class="arrow-hint">\u2190</span>${options[0].label}</button>
+        <button class="btn btn-name" data-correct="${options[1].correct}" onclick="handleClick(this)">${options[1].label}<span class="arrow-hint">\u2192</span></button>
+      </div>
+      <div class="kbd-hint"><kbd>\u2190</kbd> or <kbd>\u2192</kbd> to choose &bull; <kbd>Enter</kbd> for next</div>
+    </div>
+  `;
+}
+
+/* ─── HANDLERS (with suspense) ─── */
+const SUSPENSE_DELAY = 800;
+
+function handleClick(clickedBtn) {
+  if (answered) return;
+  answered = true;
+
+  const buttons = document.querySelectorAll('.btn-name');
+  buttons.forEach(btn => {
+    btn.disabled = true;
+    btn.classList.add('locked');
+  });
+  clickedBtn.classList.add('selected');
+
+  const isCorrect = clickedBtn.dataset.correct === 'true';
+  setTimeout(() => revealAnswer(isCorrect), SUSPENSE_DELAY);
+}
+
+function revealAnswer(isCorrect) {
+  const person = speakers[order[current]];
+  const feedback = document.getElementById('feedback');
+  const card = getCard();
+  const info = `<strong>${person.name}</strong> \u2014 ${person.project}<span class="sector-tag">${person.sector}</span>`;
+
+  const buttons = document.querySelectorAll('.btn-name');
+  buttons.forEach(btn => {
+    if (btn.dataset.correct === 'true') btn.classList.add('btn-correct');
+    else btn.classList.add('btn-wrong');
+  });
+
+  if (isCorrect) {
+    score++;
+    feedback.className = 'feedback good';
+    feedback.innerHTML = `<span class="emoji">\u{1F389}</span> Correct! ${info}`;
+    card.style.animation = 'none';
+    void card.offsetWidth;
+    card.classList.add('pulse');
+    launchConfetti();
+    document.getElementById('score-display').textContent = score;
+    bumpScore();
+  } else {
+    feedback.className = 'feedback bad';
+    feedback.innerHTML = `<span class="emoji">\u274C</span> Wrong! It was ${info}`;
+    card.style.animation = 'none';
+    void card.offsetWidth;
+    card.classList.add('shake');
+    setTimeout(() => card.classList.remove('shake'), 520);
+  }
+
+  document.getElementById('btn-group').innerHTML =
+    `<button class="btn btn-next" onclick="nextCard()">Next \u2192</button>`;
+}
+
+function nextCard() {
+  current++;
+  if (current >= order.length) {
+    showEndScreen();
+  } else {
+    showCard(current);
+  }
+}
+
+/* ─── KEYBOARD SUPPORT ─── */
+document.addEventListener('keydown', function(e) {
+  if (!gameStarted) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      startGame();
+    }
+    return;
+  }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+    e.preventDefault();
+    const btns = document.querySelectorAll('.btn-name');
+    const idx = e.key === 'ArrowLeft' ? 0 : 1;
+    if (btns[idx] && !btns[idx].disabled) handleClick(btns[idx]);
+  }
+  if (e.key === 'Enter' || e.key === ' ') {
+    const nextBtn = document.querySelector('.btn-next');
+    if (nextBtn) { e.preventDefault(); nextBtn.click(); }
+    const replayBtn = document.querySelector('.btn-replay');
+    if (replayBtn && document.getElementById('end-screen').style.display === 'flex') {
+      e.preventDefault();
+      replayBtn.click();
+    }
+  }
+});
+
+/* ─── END SCREEN ─── */
+function showEndScreen() {
+  gameStarted = false;
+  document.getElementById('game-area').innerHTML = '';
+  document.getElementById('progress-bar').style.width = '100%';
+  document.getElementById('counter').textContent = order.length + ' / ' + order.length;
+  document.getElementById('score-display').textContent = score;
+
+  const endScreen = document.getElementById('end-screen');
+  endScreen.style.display = 'flex';
+  const total = order.length;
+  document.getElementById('end-score').innerHTML = score + ' <span>/ ' + total + '</span>';
+
+  const pct = Math.round((score / total) * 100);
+  const bar = document.getElementById('end-bar');
+  const hue = pct >= 75 ? 'var(--green)' : pct >= 50 ? 'var(--gold)' : 'var(--red)';
+  bar.style.background = hue;
+  setTimeout(() => { bar.style.width = pct + '%'; }, 100);
+
+  const messages = [
+    [total,                '\u{1F3C6} Perfect! You deserve an "OG EthCC Cannes" badge. Vitalik respects you.'],
+    [Math.ceil(total*.85), '\u{1F525} Impressive! You clearly spend too much time in the Web3 conference lobby.'],
+    [Math.ceil(total*.7),  '\u{1F60E} Not bad at all! You pass for an insider. We believe you.'],
+    [Math.ceil(total*.5),  '\u{1F914} Meh... You\'ve obviously skipped a few EthCCs. Shame.'],
+    [Math.ceil(total*.3),  '\u{1F605} You\'ve seen too few stages. Stop hanging out at the pool party.'],
+    [0,                    '\u{1F480} You\'d confuse Vitalik with an NFT influencer. Come back when you\'ve done your homework.']
+  ];
+  const msg = messages.find(([min]) => score >= min);
+  document.getElementById('end-message').textContent = msg[1];
+
+  if (score >= Math.ceil(total * .75)) launchConfetti(5000);
+}
+
+/* ─── START / RESTART ─── */
+function startGame() {
+  current = 0;
+  score = 0;
+  answered = false;
+  gameStarted = true;
+  order = shuffle(speakers.map((_, i) => i));
+
+  document.getElementById('end-screen').style.display = 'none';
+  document.getElementById('progress-bar').style.width = '0%';
+  showCard(0);
+}
+
+/* ─── CONFETTI ─── */
+function launchConfetti(duration = 2200) {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const COLORS = ['#7c3aed','#a855f7','#06b6d4','#10b981','#f59e0b','#ec4899','#fff'];
+  const particles = Array.from({length: 100}, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * -canvas.height,
+    w: 5 + Math.random() * 7,
+    h: 3 + Math.random() * 5,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    r: Math.random() * Math.PI * 2,
+    dr: (Math.random() - .5) * .12,
+    dy: 2.5 + Math.random() * 3.5,
+    dx: (Math.random() - .5) * 1.8,
+    alpha: 1
+  }));
+
+  const start = performance.now();
+  function frame(now) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const elapsed = now - start;
+    const fade = Math.max(0, 1 - (elapsed - (duration - 600)) / 600);
+
+    particles.forEach(p => {
+      p.y += p.dy;
+      p.x += p.dx;
+      p.r += p.dr;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.r);
+      ctx.globalAlpha = p.alpha * fade;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    });
+
+    if (elapsed < duration) requestAnimationFrame(frame);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ─── PRELOAD first few images ─── */
+function preloadImages() {
+  speakers.slice(0, 6).forEach(s => {
+    if (s.photo) { const img = new Image(); img.src = s.photo; }
+  });
+}
+
+/* ─── INIT ─── */
+preloadImages();
+showStartScreen();
+</script>
+</body>
+</html>
