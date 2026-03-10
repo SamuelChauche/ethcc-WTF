@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:beincrypto.com)",
+      "WebFetch(domain:web3newswire.com)",
+      "WebFetch(domain:www.ccn.com)",
+      "WebFetch(domain:bitcoinethereumnews.com)"
+    ]
+  }
+}
