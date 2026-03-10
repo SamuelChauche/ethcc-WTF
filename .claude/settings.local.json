@@ -5,7 +5,8 @@
       "WebFetch(domain:beincrypto.com)",
       "WebFetch(domain:web3newswire.com)",
       "WebFetch(domain:www.ccn.com)",
-      "WebFetch(domain:bitcoinethereumnews.com)"
+      "WebFetch(domain:bitcoinethereumnews.com)",
+      "Bash(curl -s \"https://raw.githubusercontent.com/web3bio/web3bio/main/components/profile/ProfileMain.tsx\")"
     ]
   }
 }

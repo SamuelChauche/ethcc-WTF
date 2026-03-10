@@ -18,12 +18,14 @@ export const state: GameState = {
   started: false,
 };
 
+const QUIZ_LENGTH = 9;
+
 export function resetState(): void {
   state.current = 0;
   state.score = 0;
   state.answered = false;
   state.started = true;
-  state.order = shuffle(speakers.map((_, i) => i));
+  state.order = shuffle(speakers.map((_, i) => i)).slice(0, QUIZ_LENGTH);
 }
 
 export function getCurrentSpeaker(): Speaker {

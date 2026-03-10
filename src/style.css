@@ -444,22 +444,29 @@ header {
   max-width: var(--card-max);
   width: 100%;
   padding: 3.5rem 2.5rem;
-  background: rgba(18,18,26,.85);
+  background: rgb(19,19,19);
   border: 1px solid rgba(124,58,237,.1);
   border-radius: 28px;
   animation: cardIn .6s ease both;
   text-align: center;
-  backdrop-filter: blur(20px);
   box-shadow:
     0 8px 32px rgba(0,0,0,.4),
     0 0 0 1px rgba(255,255,255,.03) inset,
     0 1px 0 rgba(255,255,255,.04) inset;
 }
-.start-icon {
-  font-size: 4.5rem;
-  line-height: 1;
-  filter: drop-shadow(0 0 24px rgba(124,58,237,.5));
-  animation: float 3s ease-in-out infinite;
+.start-video-wrap {
+  width: 280px;
+  height: 158px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(124,58,237,.2);
+  box-shadow: 0 0 40px rgba(124,58,237,.15), 0 8px 32px rgba(0,0,0,.4);
+}
+.start-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 @keyframes float {
   0%, 100% { transform: translateY(0); }
@@ -528,7 +535,7 @@ header {
 
 /* ── END SCREEN ── */
 #end-screen {
-  display: none;
+  display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
@@ -610,18 +617,36 @@ header {
 
 /* ── FOOTER ── */
 .made-by {
-  font-size: .68rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  font-size: .82rem;
   color: var(--muted);
-  opacity: .45;
   text-align: center;
-  padding: .75rem 0 1.25rem;
+  padding: 1rem 0 1.5rem;
   letter-spacing: .04em;
-  font-weight: 400;
+  font-weight: 500;
+}
+.footer-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid rgba(124,58,237,.2);
+}
+.made-by a {
+  color: var(--violet2);
+  text-decoration: none;
+  transition: color .15s;
+}
+.made-by a:hover {
+  color: #c084fc;
+  text-decoration: underline;
 }
 .made-by strong {
   color: var(--violet2);
-  font-weight: 600;
-  opacity: .8;
+  font-weight: 700;
 }
 
 /* ── CONFETTI ── */
@@ -661,6 +686,7 @@ kbd {
   .photo-wrap, .photo-hex { width: 170px; height: 170px; }
   .btn { font-size: .88rem; padding: .75rem .6rem; }
   .btn-name { padding: .75rem .5rem; font-size: .8rem; }
+  .start-video-wrap { width: 220px; height: 124px; }
   .start-title { font-size: 1.6rem; }
   .start-stats { gap: 1.5rem; }
   .start-stat-num { font-size: 1.5rem; }
@@ -678,6 +704,55 @@ kbd {
 .btn:focus-visible, .btn-start:focus-visible, .btn-replay:focus-visible {
   outline: 2px solid var(--cyan);
   outline-offset: 2px;
+}
+
+/* ── TIP BUTTON ── */
+.btn-tip {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .6rem 1.1rem;
+  background: rgba(18,18,26,.85);
+  border: 1px solid rgba(124,58,237,.2);
+  border-radius: 99px;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: .85rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 24px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.03) inset;
+  transition: all .2s cubic-bezier(.4,0,.2,1);
+  animation: tipIn .5s .3s ease both;
+}
+.btn-tip:hover {
+  background: rgba(124,58,237,.15);
+  border-color: var(--violet2);
+  box-shadow: 0 8px 32px rgba(124,58,237,.2), 0 0 0 1px rgba(255,255,255,.05) inset;
+  transform: translateY(-2px);
+}
+.btn-tip:active {
+  transform: scale(.95);
+}
+.btn-tip .tip-emoji {
+  font-size: 1.1em;
+}
+@keyframes tipIn {
+  from { opacity: 0; transform: translateY(12px) scale(.9); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (max-width: 520px) {
+  .btn-tip {
+    bottom: 1rem;
+    right: 1rem;
+    padding: .5rem .9rem;
+    font-size: .78rem;
+  }
 }
 
 /* ── PREFERS REDUCED MOTION ── */

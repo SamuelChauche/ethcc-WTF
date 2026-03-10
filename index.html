@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0a0a0f" />
+  <link rel="icon" type="image/png" href="/src/img/favicon.png" />
   <title>EthCC Who's This Face – Cannes 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,23 +20,22 @@
       <div id="progress-bar"></div>
     </div>
     <div class="header-meta">
-      <span class="counter" id="counter" aria-live="polite">1 / 47</span>
+      <span class="counter" id="counter" aria-live="polite">1 / 9</span>
       <span class="score-pill" id="score-display" aria-live="polite">0</span>
     </div>
   </header>
 
   <section id="game-area" aria-label="Game area"></section>
 
-  <footer class="made-by">made by <strong>passive-record.box</strong></footer>
-
-  <section id="end-screen" aria-label="Results">
-    <div class="end-title">Do you know your scene?</div>
-    <div class="end-score" id="end-score" aria-live="polite">0 <span>/ 47</span></div>
-    <div class="end-bar-wrap"><div class="end-bar" id="end-bar"></div></div>
-    <div class="end-message" id="end-message"></div>
-    <button class="btn-replay" id="btn-replay">Play Again</button>
-  </section>
+  <footer class="made-by">
+    <img src="/src/img/logo.jpg" alt="EthCC.WTF logo" class="footer-logo" />
+    <span>made by <a href="https://web3.bio/passive-record.box" target="_blank" rel="noopener"><strong>passive-record.box</strong></a></span>
+  </footer>
 </div>
+
+<a id="tip-btn" class="btn-tip" href="https://web3.bio/ethcc-wtf.eth#tip" target="_blank" rel="noopener">
+  <span class="tip-emoji"></span> Tip
+</a>
 
 <script type="module" src="/src/main.ts"></script>
 </body>

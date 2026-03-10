@@ -36,20 +36,22 @@ export function showStartScreen(): void {
   const projectCount = new Set(speakers.map((s) => s.project)).size;
   $('game-area').innerHTML = `
     <div id="start-screen">
-      <div class="start-icon">\u{1F3AD}</div>
-      <div class="start-title">EthCC Who's This Face</div>
+      <div class="start-video-wrap">
+        <video class="start-video" src="/src/img/logo video.mp4" autoplay loop muted playsinline></video>
+      </div>
+      <div class="start-title">Who's This Face</div>
       <p class="start-subtitle">
-        Can you identify the <strong>${speakers.length} speakers</strong> of EthCC Cannes 2026?
-        Test your knowledge of the Web3 ecosystem.
+        <strong>9 random speakers</strong> from EthCC Cannes 2026.
+        Can you identify them all?
       </p>
       <div class="start-stats">
         <div class="start-stat">
-          <span class="start-stat-num">${speakers.length}</span>
-          <span class="start-stat-label">Speakers</span>
+          <span class="start-stat-num">9</span>
+          <span class="start-stat-label">Questions</span>
         </div>
         <div class="start-stat">
-          <span class="start-stat-num">${projectCount}</span>
-          <span class="start-stat-label">Projects</span>
+          <span class="start-stat-num">${speakers.length}</span>
+          <span class="start-stat-label">Speakers</span>
         </div>
         <div class="start-stat">
           <span class="start-stat-num">2</span>
@@ -183,21 +185,13 @@ function nextCard(): void {
 
 function showEndScreen(): void {
   state.started = false;
-  $('game-area').innerHTML = '';
-  $('progress-bar').style.width = '100%';
-  $('counter').textContent = `${totalSpeakers()} / ${totalSpeakers()}`;
-  $('score-display').textContent = String(state.score);
-
-  const endScreen = $('end-screen');
-  endScreen.style.display = 'flex';
   const total = totalSpeakers();
-  $('end-score').innerHTML = `${state.score} <span>/ ${total}</span>`;
-
   const pct = Math.round((state.score / total) * 100);
-  const bar = $('end-bar') as HTMLElement;
   const hue = pct >= 75 ? 'var(--green)' : pct >= 50 ? 'var(--gold)' : 'var(--red)';
-  bar.style.background = hue;
-  setTimeout(() => { bar.style.width = `${pct}%`; }, 100);
+
+  $('progress-bar').style.width = '100%';
+  $('counter').textContent = `${total} / ${total}`;
+  $('score-display').textContent = String(state.score);
 
   const messages: [number, string][] = [
     [total,                '\u{1F3C6} Perfect! You deserve an "OG EthCC Cannes" badge. Vitalik respects you.'],
@@ -208,7 +202,23 @@ function showEndScreen(): void {
     [0,                       '\u{1F480} You\'d confuse Vitalik with an NFT influencer. Come back when you\'ve done your homework.'],
   ];
   const msg = messages.find(([min]) => state.score >= min);
-  $('end-message').textContent = msg ? msg[1] : '';
+  const message = msg ? msg[1] : '';
+
+  $('game-area').innerHTML = `
+    <div id="end-screen">
+      <div class="end-title">Do you know your scene?</div>
+      <div class="end-score">${state.score} <span>/ ${total}</span></div>
+      <div class="end-bar-wrap"><div class="end-bar" id="end-bar"></div></div>
+      <div class="end-message">${message}</div>
+      <button class="btn-replay" id="btn-replay">Play Again</button>
+    </div>
+  `;
+
+  const bar = $('end-bar') as HTMLElement;
+  bar.style.background = hue;
+  setTimeout(() => { bar.style.width = `${pct}%`; }, 100);
+
+  $('btn-replay').addEventListener('click', startGame);
 
   if (state.score >= Math.ceil(total * 0.75)) launchConfetti(5000);
 }
@@ -217,7 +227,6 @@ function showEndScreen(): void {
 
 export function startGame(): void {
   resetState();
-  $('end-screen').style.display = 'none';
   $('progress-bar').style.width = '0%';
   showCard();
 }
@@ -247,15 +256,12 @@ export function setupKeyboard(): void {
         e.preventDefault();
         nextBtn.click();
       }
-      const endScreen = $('end-screen');
       const replayBtn = document.getElementById('btn-replay');
-      if (replayBtn && endScreen.style.display === 'flex') {
+      if (replayBtn) {
         e.preventDefault();
         replayBtn.click();
       }
     }
   });
 
-  // Replay button on end screen
-  $('btn-replay').addEventListener('click', startGame);
 }
