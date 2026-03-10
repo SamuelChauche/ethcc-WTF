@@ -37,7 +37,7 @@ export function showStartScreen(): void {
   $('game-area').innerHTML = `
     <div id="start-screen">
       <div class="start-video-wrap">
-        <video class="start-video" src="/src/img/logo video.mp4" autoplay loop muted playsinline></video>
+        <video class="start-video" src="/img/logo video.mp4" autoplay loop muted playsinline></video>
       </div>
       <div class="start-title">Who's This Face</div>
       <p class="start-subtitle">
